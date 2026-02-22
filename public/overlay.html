@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Overlay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: transparent;
+            /* Essential for OBS */
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Alert Container */
+        #alert-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .alert-box {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(168, 85, 247, 0.9));
+            color: white;
+            padding: 20px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(50px) scale(0.9);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .alert-box.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .alert-icon {
+            font-size: 3rem;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .alert-content h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .alert-content p {
+            margin: 5px 0 0 0;
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        /* Goal Wrapper */
+        #goal-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            background: rgba(18, 18, 22, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .goal-bar-bg {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .goal-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FE2C55, #ff4c70);
+            width: 0%;
+            transition: width 0.5s ease-out;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Goal Widget -->
+    <div id="goal-container">
+        <div class="goal-header">
+            <span><i class="fa-solid fa-heart"></i> LIKES GOAL</span>
+            <span id="goal-text">0 / 1000</span>
+        </div>
+        <div class="goal-bar-bg">
+            <div id="goal-bar" class="goal-bar-fill"></div>
+        </div>
+    </div>
+
+    <!-- Central Alerts -->
+    <div id="alert-container">
+        <!-- Alerts will be injected here via JS -->
+    </div>
+
+    <!-- Hidden audio elements for SFX -->
+    <!-- Using short safe data URIs for default generic beeps if user hasn't added mp3s -->
+    <audio id="sfx-gift" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
+    <audio id="sfx-follow" src="https://assets.mixkit.co/active_storage/sfx/2004/2004-preview.mp3"></audio>
+
+    <script src="/socket.io/socket.io.min.js"></script>
+    <script src="overlay.js"></script>
+</body>
+
+</html>

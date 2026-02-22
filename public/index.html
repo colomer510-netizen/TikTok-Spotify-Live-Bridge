@@ -4,127 +4,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tikfinity Spotify Bridge</title>
-    <!-- Modern Font: Inter -->
+    <title>Stream Bridge UI</title>
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 </head>
 
 <body>
-    <div class="background-radial"></div>
 
-    <div class="app-container">
+    <div class="dashboard-container">
 
-        <!-- Header -->
-        <header class="glass-panel">
-            <h1><span class="gradient-text">TikTok</span> x Spotify</h1>
-            <p>Live stream music controller</p>
-        </header>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fa-solid fa-broadcast-tower glowing-icon"></i>
+                <h2>StreamBridge</h2>
+            </div>
 
-        <main class="dashboard">
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-music"></i> Audio & Media</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-bullhorn"></i> Alerts & TTS</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-layer-group"></i> Overlays</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Settings</a>
+            </nav>
 
-            <!-- Left Column: Controls & Connection -->
-            <div class="column">
+            <div class="status-summary">
+                <div class="status-indicator">
+                    <span id="spotify-led" class="led disconnected"></span> Spotify
+                </div>
+                <div class="status-indicator">
+                    <span id="tiktok-led" class="led disconnected"></span> TikTok Live
+                </div>
+            </div>
+        </aside>
 
-                <!-- TikTok Connection Panel -->
-                <section class="glass-panel card">
-                    <h2>TikTok Connection</h2>
-                    <div id="tiktok-status" class="status offline">Offline</div>
-                    <div class="input-group">
-                        <input type="text" id="username-input" placeholder="Enter TikTok Username..." />
-                        <button id="connect-btn" class="primary-btn">Connect</button>
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <header class="top-header">
+                <h1>Dashboard Overview</h1>
+                <div class="user-profile">
+                    <img id="tiktok-profile-pic" src="https://via.placeholder.com/40" alt="Profile"
+                        class="avatar hidden">
+                    <span id="tiktok-username-display" class="username">Not Connected</span>
+                </div>
+            </header>
+
+            <div class="grid-layout">
+
+                <!-- TikTok Connection Card -->
+                <div class="glass-card connection-card">
+                    <div class="card-header">
+                        <i class="fa-brands fa-tiktok"></i>
+                        <h3>TikTok Connection</h3>
                     </div>
-                </section>
-
-                <!-- Spotify Control Panel -->
-                <section class="glass-panel card spotify-panel">
-                    <h2>Spotify</h2>
-                    <div id="spotify-status" class="status offline">Not Authenticated</div>
-                    <button id="spotify-login-btn" class="spotify-btn">Login to Spotify</button>
-
-                    <div class="media-controls hidden" id="media-controls">
-                        <div class="track-info">
-                            <h3 id="current-track-name">No track playing</h3>
+                    <div class="card-body">
+                        <div id="tiktok-status" class="status-badge error">Disconnected</div>
+                        <div id="tiktok-error-message" class="error-details hidden"></div>
+                        <div class="input-group">
+                            <input type="text" id="tiktok-username" placeholder="username (no @)">
+                            <button id="btn-tiktok-connect" class="btn btn-primary">Connect</button>
                         </div>
-                        <div class="control-buttons">
-                            <button class="icon-btn" id="btn-pause">⏸</button>
-                            <button class="icon-btn" id="btn-play">▶</button>
-                            <button class="icon-btn" id="btn-skip">⏭</button>
+                        <button id="btn-tiktok-disconnect" class="btn btn-danger hidden">Disconnect</button>
+                    </div>
+                </div>
+
+                <!-- Spotify Connection Card -->
+                <div class="glass-card connection-card">
+                    <div class="card-header">
+                        <i class="fa-brands fa-spotify" style="color: #1DB954;"></i>
+                        <h3>Spotify Connection</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="spotify-status" class="status-badge error">Not Authenticated</div>
+                        <button id="btn-spotify-login" class="btn btn-spotify">Login to Spotify</button>
+
+                        <div class="now-playing-section mt-15">
+                            <span class="label">Now Playing:</span>
+                            <div id="current-track-name" class="scrolling-text">No track playing right now</div>
                         </div>
                     </div>
-                </section>
+                </div>
 
-                <!-- Local Music Player -->
-                <section class="glass-panel card local-music-panel">
-                    <h2>Local Music</h2>
-                    <p class="subtitle">Play MP3s from your <code>local-music</code> folder.</p>
-
-                    <div class="local-controls">
-                        <select id="local-music-select" class="input-select">
-                            <option value="">-- No Local Audio Found --</option>
+                <!-- Local Music Card -->
+                <div class="glass-card connection-card">
+                    <div class="card-header">
+                        <i class="fa-solid fa-folder-music"></i>
+                        <h3>Local Music</h3>
+                    </div>
+                    <div class="card-body">
+                        <select id="local-music-select" class="modern-select">
+                            <option value="">Loading...</option>
                         </select>
-                        <button id="btn-local-play" class="primary-btn" disabled>Play</button>
+                        <button id="btn-local-play" class="btn btn-secondary mt-10" disabled><i
+                                class="fa-solid fa-play"></i> Play Local</button>
+                        <audio id="local-audio-player" class="hidden"></audio>
                     </div>
+                </div>
 
-                    <div class="audio-player-wrapper" style="margin-top: 15px;">
-                        <audio id="local-audio-player" controls style="width: 100%; border-radius: 8px;"></audio>
+                <!-- Interactive Features Card -->
+                <div class="glass-card settings-card">
+                    <div class="card-header">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <h3>Interactive Features</h3>
                     </div>
-                </section>
-
-                <!-- Rules Configuration -->
-                <section class="glass-panel card rules-panel">
-                    <h2>Chat Rules Manager</h2>
-                    <p class="subtitle">Set what actions viewers can trigger.</p>
-
-                    <div class="rule-item">
-                        <label>
-                            <input type="checkbox" id="rule-play-enabled" checked />
-                            Play/Queue Song on Spotify (<code>!play [song]</code>)
+                    <div class="card-body">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="rule-spotify-play" checked>
+                            <span class="slider"></span>
+                            <span class="toggle-label">Allow `!play` (Spotify)</span>
+                        </label>
+                        <label class="toggle-switch mt-10">
+                            <input type="checkbox" id="rule-local-play" checked>
+                            <span class="slider"></span>
+                            <span class="toggle-label">Allow `!playlocal` (Local MP3)</span>
+                        </label>
+                        <label class="toggle-switch mt-10">
+                            <input type="checkbox" id="rule-tts-chat">
+                            <span class="slider"></span>
+                            <span class="toggle-label">Read Chat (TTS)</span>
                         </label>
                     </div>
+                </div>
 
-                    <div class="rule-item">
-                        <label>
-                            <input type="checkbox" id="rule-playlocal-enabled" checked />
-                            Play Local Music (<code>!playlocal [filename]</code>)
-                        </label>
+                <!-- Live Event Feed (Spans Full Width at Bottom) -->
+                <div class="glass-card event-feed-card full-width">
+                    <div class="card-header">
+                        <i class="fa-solid fa-bolt"></i>
+                        <h3>Live Activity Feed</h3>
                     </div>
-
-                    <div class="rule-item">
-                        <label>
-                            <input type="checkbox" id="rule-skip-enabled" checked />
-                            Skip Spotify Song (<code>!skip</code>)
-                        </label>
+                    <div class="card-body p-0">
+                        <ul id="events-list" class="feed-list">
+                            <li class="feed-item system"><i class="fa-solid fa-info-circle"></i> Waiting for
+                                connection...</li>
+                        </ul>
                     </div>
-
-                    <div class="rule-item">
-                        <label>
-                            <input type="checkbox" id="rule-pause-enabled" />
-                            Pause/Resume Spotify (<code>!pause</code> / <code>!resume</code>)
-                        </label>
-                    </div>
-                </section>
+                </div>
 
             </div>
-
-            <!-- Right Column: Live Event Feed -->
-            <div class="column">
-                <section class="glass-panel card feed-panel">
-                    <h2>Live Activity Stream</h2>
-                    <div class="feed-container" id="event-feed">
-                        <!-- Events injected here -->
-                        <div class="feed-message system">System initialized. Waiting for connections...</div>
-                    </div>
-                </section>
-            </div>
-
         </main>
     </div>
 
-    <!-- Script loading -->
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.min.js"></script>
     <script src="app.js"></script>
 </body>
 
