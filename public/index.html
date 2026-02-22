@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tikfinity Spotify Bridge</title>
+    <!-- Modern Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="background-radial"></div>
+
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="glass-panel">
+            <h1><span class="gradient-text">TikTok</span> x Spotify</h1>
+            <p>Live stream music controller</p>
+        </header>
+
+        <main class="dashboard">
+            
+            <!-- Left Column: Controls & Connection -->
+            <div class="column">
+                
+                <!-- TikTok Connection Panel -->
+                <section class="glass-panel card">
+                    <h2>TikTok Connection</h2>
+                    <div id="tiktok-status" class="status offline">Offline</div>
+                    <div class="input-group">
+                        <input type="text" id="username-input" placeholder="Enter TikTok Username..." />
+                        <button id="connect-btn" class="primary-btn">Connect</button>
+                    </div>
+                </section>
+
+                <!-- Spotify Control Panel -->
+                <section class="glass-panel card spotify-panel">
+                    <h2>Spotify</h2>
+                    <div id="spotify-status" class="status offline">Not Authenticated</div>
+                    <button id="spotify-login-btn" class="spotify-btn">Login to Spotify</button>
+
+                    <div class="media-controls hidden" id="media-controls">
+                        <div class="track-info">
+                            <h3 id="current-track-name">No track playing</h3>
+                        </div>
+                        <div class="control-buttons">
+                            <button class="icon-btn" id="btn-pause">⏸</button>
+                            <button class="icon-btn" id="btn-play">▶</button>
+                            <button class="icon-btn" id="btn-skip">⏭</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Rules Configuration -->
+                <section class="glass-panel card rules-panel">
+                    <h2>Chat Rules Manager</h2>
+                    <p class="subtitle">Set what actions viewers can trigger.</p>
+                    
+                    <div class="rule-item">
+                        <label>
+                            <input type="checkbox" id="rule-play-enabled" checked />
+                            Play/Queue Song (<code>!play [song]</code>)
+                        </label>
+                    </div>
+
+                    <div class="rule-item">
+                        <label>
+                            <input type="checkbox" id="rule-skip-enabled" checked />
+                            Skip Song (<code>!skip</code>)
+                        </label>
+                    </div>
+
+                    <div class="rule-item">
+                        <label>
+                            <input type="checkbox" id="rule-pause-enabled" />
+                            Pause/Resume (<code>!pause</code> / <code>!resume</code>)
+                        </label>
+                    </div>
+                </section>
+                
+            </div>
+
+            <!-- Right Column: Live Event Feed -->
+            <div class="column">
+                <section class="glass-panel card feed-panel">
+                    <h2>Live Activity Stream</h2>
+                    <div class="feed-container" id="event-feed">
+                        <!-- Events injected here -->
+                        <div class="feed-message system">System initialized. Waiting for connections...</div>
+                    </div>
+                </section>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Script loading -->
+    <script src="app.js"></script>
+</body>
+</html>

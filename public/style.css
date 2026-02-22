@@ -1,0 +1,317 @@
+:root {
+    --bg-color: #0d0f14;
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    --accent-color: #6366f1;
+    --accent-hover: #4f46e5;
+    --spotify-green: #1db954;
+    --spotify-green-hover: #1ed760;
+    --tiktok-cyan: #00f2fe;
+    --tiktok-pink: #fe0979;
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.05);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Dynamic abstract background effect */
+.background-radial {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200vw;
+    height: 200vh;
+    background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 60%);
+    z-index: -1;
+    pointer-events: none;
+    animation: slowPulse 10s ease-in-out infinite alternate;
+}
+
+@keyframes slowPulse {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.app-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+header {
+    text-align: center;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.gradient-text {
+    background: linear-gradient(90deg, var(--tiktok-cyan), var(--tiktok-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+header p {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Layout */
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2rem;
+}
+
+.card {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.card h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 0.75rem;
+}
+
+.subtitle {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+/* Status Indicators */
+.status {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    background: rgba(255,255,255,0.1);
+}
+
+.status.offline { color: #f87171; background: rgba(248, 113, 113, 0.1); }
+.status.online { color: #4ade80; background: rgba(74, 222, 128, 0.1); }
+
+/* Inputs and Buttons */
+.input-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+input[type="text"] {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+button {
+    font-family: inherit;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.primary-btn {
+    background: var(--accent-color);
+    color: white;
+    padding: 0.75rem 1.5rem;
+}
+
+.primary-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.spotify-btn {
+    background: var(--spotify-green);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    width: 100%;
+}
+
+.spotify-btn:hover {
+    background: var(--spotify-green-hover);
+    transform: translateY(-1px);
+}
+
+/* Spotify Controls */
+.media-controls {
+    margin-top: 1.5rem;
+    background: rgba(0,0,0,0.2);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.media-controls.hidden { display: none; }
+
+.track-info h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.control-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.icon-btn {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 1.2rem;
+}
+
+.icon-btn:hover {
+    background: rgba(255,255,255,0.2);
+    transform: scale(1.05);
+}
+
+/* Rules Panel */
+.rules-panel .rule-item {
+    background: rgba(0,0,0,0.2);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.rule-item label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    width: 100%;
+}
+
+.rule-item code {
+    background: rgba(255,255,255,0.1);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    color: var(--tiktok-cyan);
+    font-family: monospace;
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent-color);
+}
+
+/* Feed Panel */
+.feed-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.feed-container {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-y: auto;
+    max-height: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Scrollbar styling */
+.feed-container::-webkit-scrollbar { width: 6px; }
+.feed-container::-webkit-scrollbar-track { background: transparent; }
+.feed-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+
+/* In-feed items */
+.feed-message {
+    padding: 0.75rem;
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    animation: fadeIn 0.3s ease-out forwards;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.feed-message.system { color: var(--text-secondary); font-style: italic; }
+.feed-message.chat { border-left: 2px solid var(--text-secondary); }
+.feed-message.command { border-left: 2px solid var(--accent-color); background: rgba(99, 102, 241, 0.1); }
+.feed-message.gift { border-left: 2px solid var(--tiktok-pink); background: rgba(254, 9, 121, 0.1); }
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.msg-content { flex: 1; }
+.msg-author { font-weight: 600; color: #fff; margin-bottom: 0.2rem; display: block; }
+.msg-text { color: rgba(255,255,255,0.9); }
+.timestamp { font-size: 0.7rem; color: var(--text-secondary); margin-left: auto; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .dashboard { grid-template-columns: 1fr; }
+    .feed-container { max-height: 400px; }
+}
