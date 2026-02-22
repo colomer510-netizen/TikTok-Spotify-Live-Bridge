@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Config rules
     const rulePlayEnabled = document.getElementById('rule-play-enabled');
+    const rulePlayLocalEnabled = document.getElementById('rule-playlocal-enabled');
     const ruleSkipEnabled = document.getElementById('rule-skip-enabled');
     const rulePauseEnabled = document.getElementById('rule-pause-enabled');
 
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('connect', () => {
         logEvent('Connected to local bridge server.', 'system');
         checkConnections();
+        loadLocalMusic();
     });
 
     // ---- Spotify Setup ----
@@ -131,6 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify({ query: song })
                 }).catch(console.error);
             }
+        } else if (msg.startsWith('!playlocal ') && rulePlayLocalEnabled.checked) {
+            const songName = msg.substring(11).trim().toLowerCase();
+            if (songName) {
+                logEvent(`Command !playlocal triggered by ${data.nickname}: ${songName}`, 'command', data);
+                playLocalMusic(songName);
+            }
         } else if (msg === '!skip' && ruleSkipEnabled.checked) {
             logEvent(`Command !skip triggered by ${data.nickname}`, 'command', data);
             socket.emit('spotify:skip');
@@ -193,4 +201,64 @@ document.addEventListener('DOMContentLoaded', () => {
         // Auto-scroll logic
         eventFeed.scrollTop = eventFeed.scrollHeight;
     }
+
+    // ---- Local Music Functionality ----
+    const localMusicSelect = document.getElementById('local-music-select');
+    const btnLocalPlay = document.getElementById('btn-local-play');
+    const localAudioPlayer = document.getElementById('local-audio-player');
+    let localFiles = [];
+
+    async function loadLocalMusic() {
+        try {
+            const res = await fetch('/api/local-music');
+            localFiles = await res.json();
+
+            localMusicSelect.innerHTML = '';
+
+            if (localFiles.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = "";
+                opt.textContent = "-- No Local Audio Found --";
+                localMusicSelect.appendChild(opt);
+                btnLocalPlay.disabled = true;
+                return;
+            }
+
+            localFiles.forEach(file => {
+                const opt = document.createElement('option');
+                opt.value = file;
+                opt.textContent = file;
+                localMusicSelect.appendChild(opt);
+            });
+            btnLocalPlay.disabled = false;
+
+        } catch (err) {
+            console.error("Failed to load local music", err);
+        }
+    }
+
+    function playLocalMusic(query) {
+        // Find best match in localFiles
+        const exactMatch = localFiles.find(f => f.toLowerCase() === query.toLowerCase() || f.toLowerCase() === query.toLowerCase() + '.mp3');
+        const partialMatch = localFiles.find(f => f.toLowerCase().includes(query.toLowerCase()));
+
+        const fileToPlay = exactMatch || partialMatch;
+
+        if (fileToPlay) {
+            localAudioPlayer.src = `/music/${encodeURIComponent(fileToPlay)}`;
+            localAudioPlayer.play().catch(err => console.error("Error playing audio:", err));
+            logEvent(`Playing local music: ${fileToPlay}`, 'system');
+        } else {
+            logEvent(`Local file not found for query: ${query}`, 'system');
+        }
+    }
+
+    // Manual play from UI
+    btnLocalPlay.addEventListener('click', () => {
+        const selected = localMusicSelect.value;
+        if (selected) {
+            playLocalMusic(selected);
+        }
+    });
+
 });

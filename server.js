@@ -4,6 +4,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 // Import our helper modules
 const tiktokHelper = require('./tiktok');
@@ -20,6 +21,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/music', express.static(path.join(__dirname, 'local-music')));
 
 // Spotify Routes
 app.get('/api/spotify/login', (req, res) => {
@@ -83,6 +85,20 @@ app.post('/api/tiktok/disconnect', (req, res) => {
 
 app.get('/api/tiktok/status', (req, res) => {
     res.json(tiktokHelper.getStatus());
+});
+
+// Local Music Routes
+app.get('/api/local-music', (req, res) => {
+    const musicDir = path.join(__dirname, 'local-music');
+    if (!fs.existsSync(musicDir)) {
+        return res.json([]);
+    }
+    fs.readdir(musicDir, (err, files) => {
+        if (err) return res.status(500).json({ error: 'Failed to read directory' });
+        // Clean to only show common audio formats
+        const audioFiles = files.filter(f => f.endsWith('.mp3') || f.endsWith('.wav') || f.endsWith('.ogg'));
+        res.json(audioFiles);
+    });
 });
 
 // Real-time connections

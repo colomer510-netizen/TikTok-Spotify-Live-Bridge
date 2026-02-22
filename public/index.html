@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,11 +12,12 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 </head>
+
 <body>
     <div class="background-radial"></div>
 
     <div class="app-container">
-        
+
         <!-- Header -->
         <header class="glass-panel">
             <h1><span class="gradient-text">TikTok</span> x Spotify</h1>
@@ -23,10 +25,10 @@
         </header>
 
         <main class="dashboard">
-            
+
             <!-- Left Column: Controls & Connection -->
             <div class="column">
-                
+
                 <!-- TikTok Connection Panel -->
                 <section class="glass-panel card">
                     <h2>TikTok Connection</h2>
@@ -55,33 +57,57 @@
                     </div>
                 </section>
 
+                <!-- Local Music Player -->
+                <section class="glass-panel card local-music-panel">
+                    <h2>Local Music</h2>
+                    <p class="subtitle">Play MP3s from your <code>local-music</code> folder.</p>
+
+                    <div class="local-controls">
+                        <select id="local-music-select" class="input-select">
+                            <option value="">-- No Local Audio Found --</option>
+                        </select>
+                        <button id="btn-local-play" class="primary-btn" disabled>Play</button>
+                    </div>
+
+                    <div class="audio-player-wrapper" style="margin-top: 15px;">
+                        <audio id="local-audio-player" controls style="width: 100%; border-radius: 8px;"></audio>
+                    </div>
+                </section>
+
                 <!-- Rules Configuration -->
                 <section class="glass-panel card rules-panel">
                     <h2>Chat Rules Manager</h2>
                     <p class="subtitle">Set what actions viewers can trigger.</p>
-                    
+
                     <div class="rule-item">
                         <label>
                             <input type="checkbox" id="rule-play-enabled" checked />
-                            Play/Queue Song (<code>!play [song]</code>)
+                            Play/Queue Song on Spotify (<code>!play [song]</code>)
+                        </label>
+                    </div>
+
+                    <div class="rule-item">
+                        <label>
+                            <input type="checkbox" id="rule-playlocal-enabled" checked />
+                            Play Local Music (<code>!playlocal [filename]</code>)
                         </label>
                     </div>
 
                     <div class="rule-item">
                         <label>
                             <input type="checkbox" id="rule-skip-enabled" checked />
-                            Skip Song (<code>!skip</code>)
+                            Skip Spotify Song (<code>!skip</code>)
                         </label>
                     </div>
 
                     <div class="rule-item">
                         <label>
                             <input type="checkbox" id="rule-pause-enabled" />
-                            Pause/Resume (<code>!pause</code> / <code>!resume</code>)
+                            Pause/Resume Spotify (<code>!pause</code> / <code>!resume</code>)
                         </label>
                     </div>
                 </section>
-                
+
             </div>
 
             <!-- Right Column: Live Event Feed -->
@@ -101,4 +127,5 @@
     <!-- Script loading -->
     <script src="app.js"></script>
 </body>
+
 </html>
